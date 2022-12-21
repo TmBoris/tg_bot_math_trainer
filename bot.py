@@ -19,7 +19,6 @@ Name = ""
 math_tasks = my_math.math_tasks
 answers = my_math.answers
 
-
 def GetWeather():
     t = random.randint(-30, 35)
     return t
