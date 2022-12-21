@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 import random
 import secret
-import math
+import my_math
 import asyncio
 
 RUSSIAN = 1
@@ -16,8 +16,8 @@ ADD = False
 REMOVE = False
 Name = ""
 
-math_tasks = math.math_tasks
-answers = math.answers
+math_tasks = my_math.math_tasks
+answers = my_math.answers
 
 
 def GetWeather():
