@@ -1,9 +1,10 @@
 import telebot
-from telebot import types
 import random
 import secret
 import my_math
 import asyncio
+
+types = telebot.types
 
 RUSSIAN = 1
 ENGLISH = 2
@@ -18,6 +19,7 @@ Name = ""
 
 math_tasks = my_math.math_tasks
 answers = my_math.answers
+
 
 def GetWeather():
     t = random.randint(-30, 35)
@@ -36,11 +38,12 @@ def GetTasks(name):
     return dct[name]
 
 
-def ArhiveTask(name, num):
-    num = int(num) - 1
-    if name in dct:
-        if num < len(dct[name]):
-            dct[name].remove(dct[name][num])
+def ArchiveTask(name, num):
+    if num.isdigit:
+        num = int(num) - 1
+        if name in dct:
+            if num < len(dct[name]):
+                dct[name].remove(dct[name][num])
 
 
 def GetMathTask():
@@ -52,9 +55,9 @@ def RusElse(message, arg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton("Погода")
     btn2 = types.KeyboardButton('Добавить задачу')
-    btn3 = types.KeyboardButton("Узнать дела на сегодня")
-    btn4 = types.KeyboardButton("Задача сделана")
-    btn5 = types.KeyboardButton("Когда уже релаксить?!")
+    btn3 = types.KeyboardButton("Посмотреть текущие задачи")
+    btn4 = types.KeyboardButton("Убрать задачу")
+    btn5 = types.KeyboardButton("Когда уже отдыхать?!")
     btn6 = types.KeyboardButton("Хочу таску")
     markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
     bot.send_message(message.from_user.id, arg, reply_markup=markup)
@@ -65,7 +68,7 @@ def EngElse(message, arg):
     btn1 = types.KeyboardButton("Weather")
     btn2 = types.KeyboardButton('Add task')
     btn3 = types.KeyboardButton("tasklist")
-    btn4 = types.KeyboardButton("mark the task is done")
+    btn4 = types.KeyboardButton("remove task")
     btn5 = types.KeyboardButton("Next chill day?")
     markup.add(btn1, btn2, btn3, btn4, btn5)
     bot.send_message(message.from_user.id, arg, reply_markup=markup)
@@ -101,7 +104,7 @@ def get_text_messages(message):
             AddTask(Name, message.text)
             ADD = False
         if REMOVE:
-            ArhiveTask(Name, message.text)
+            ArchiveTask(Name, message.text)
             REMOVE = False
         WAITING_FOR_TASK = False
         if language == RUSSIAN:
@@ -116,21 +119,21 @@ def get_text_messages(message):
                                                    "1) Узнать температуру за окном\n" \
                                                    "2) Добавить задачу в список\n" \
                                                    "3) Узнать какие дела запланированны на сегодня\n" \
-                                                   "4) Внести пометку, что задача сделана" \
-                                                   "4) Узнать когда ближайший выходной\n" \
-                                                   "5) Попросить интересную задачку по математике"
+                                                   "4) Внести пометку, что Убрать задачу\n" \
+                                                   "5) Узнать когда ближайший выходной\n" \
+                                                   "6) Попросить интересную задачку по математике"
             bot.send_message(message.from_user.id, ans)
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             btn1 = types.KeyboardButton("Погода")
             btn2 = types.KeyboardButton('Добавить задачу')
-            btn3 = types.KeyboardButton("Узнать дела на сегодня")
-            btn4 = types.KeyboardButton("Задача сделана")
-            btn5 = types.KeyboardButton("Когда уже релаксить?!")
+            btn3 = types.KeyboardButton("Посмотреть текущие задачи")
+            btn4 = types.KeyboardButton("Убрать задачу")
+            btn5 = types.KeyboardButton("Когда уже отдыхать?!")
             btn6 = types.KeyboardButton("Хочу таску")
             markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
             bot.send_message(message.from_user.id, "Чем займемся?", reply_markup=markup)
         else:
-            ans = "Hello," + str(Name) + " ! Now you can\n" \
+            ans = "Hello, " + str(Name) + "! Now you can\n" \
                                          "1) Ask me about outside weather\n" \
                                          "2) Add a task to your list of tasks\n" \
                                          "3) Ask me about your plans\n" \
@@ -141,7 +144,7 @@ def get_text_messages(message):
             btn1 = types.KeyboardButton("Weather")
             btn2 = types.KeyboardButton('Add task')
             btn3 = types.KeyboardButton("tasklist")
-            btn4 = types.KeyboardButton("mark the task is done")
+            btn4 = types.KeyboardButton("remove task")
             btn5 = types.KeyboardButton("Next chill day?")
             markup.add(btn1, btn2, btn3, btn4, btn5)
             bot.send_message(message.from_user.id, "So?", reply_markup=markup)
@@ -163,7 +166,7 @@ def get_text_messages(message):
             bot.send_message(message.from_user.id, "Давай задачу")
         else:
             bot.send_message(message.from_user.id, "Give me your task")
-    elif message.text == "Узнать дела на сегодня" or message.text == "tasklist":
+    elif message.text == "Посмотреть текущие задачи" or message.text == "tasklist":
         arr = GetTasks(Name)
         if language == RUSSIAN:
             ans = "Список задач: \n"
@@ -177,14 +180,14 @@ def get_text_messages(message):
                 ans += str(i + 1) + ") " + task + "\n"
             bot.send_message(message.from_user.id, ans)
             EngElse(message, "Anything else?")
-    elif message.text == "Задача сделана" or message.text == "mark the task is done":
+    elif message.text == "Убрать задачу" or message.text == "remove task":
         WAITING_FOR_TASK = True
         REMOVE = True
         if language == RUSSIAN:
             bot.send_message(message.from_user.id, "Какую?(номер)")
         else:
             bot.send_message(message.from_user.id, "Which one?(number)")
-    elif message.text == "Когда уже релаксить?!" or message.text == "Next chill day?":
+    elif message.text == "Когда уже отдыхать?!" or message.text == "Next chill day?":
         if language == RUSSIAN:
             bot.send_message(message.from_user.id, "Кризис в стране, фигачить нужно, а не отдыхать!")
             RusElse(message, "Еще что-нибудь интересует?")
